@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <title>Trump vs Biden</title>
+  <meta name="author" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  </head>
+
+  <body>
+
+
+  <h1 class="text-center m-1">2012 vs 2020 Presidential Debate</h1>
+  <div class="container d-flex justify-content-center p-2">
+    <p>Want to see the difference between a good debate and a poor one?
+      This webpage will switch between the first 2012 presidential debate and the first 2020 presidential debate about every 10 seconds.
+      Each time it switches to a random point in the debate so you can quickly gauge how bad everything has become.
+    </p>
+  </div>
+
+  <!--
+  <div class="d-flex justify-content-center">
+      <button id="switch2012" type="button" class="btn btn-primary m-2">Play 2012 randomly</button>
+      <button id="switch2020" type="button" class="btn btn-danger m-2">Play 2020 randomly</button>
+  </div>
+
+  <div class="text-center form-check">
+    <input class="form-check-input" checked type="checkbox" value="" id="switchVideos">
+    <label class="form-check-label" for="switchVideos">
+      Switch videos
+    </label>
+  </div>
+  -->
+  <div class="d-flex justify-content-center">
+    <button id="startstop" type="button" class="btn btn-primary m-2">Click to begin!</button>
+  </div>
+
+
+  <div class="d-flex justify-content-center p-5">
+    <!-- 2012 -->
+    <iframe class="m-1" id="ytplayer2012" type="text/html" width="640" height="360"
+            src="https://www.youtube.com/embed/62vqSb4YQOE?autoplay=1&enablejsapi=1&rel=0"
+            frameborder="0" allow="autoplay">
+    </iframe>
+    <!-- 2020 -->
+    <iframe class="m-1" id="ytplayer2020" type="text/html" width="640" height="360"
+            src="https://www.youtube.com/embed/yHFI8TsSKXY?autoplay=1&enablejsapi=1&rel=0"
+            frameborder="0" allow="autoplay">
+    </iframe>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  <script src="https://www.youtube.com/player_api"></script>
+  
+  
+
+
+  <script>
+    
+    var twelve_player;
+    var twenty_player;
+    
+    function onYouTubeIframeAPIReady() {
+        console.log("player");
+        twelve_player = new YT.Player('ytplayer2012');
+        twelve_player.setSize(0, 0);
+        twenty_player = new YT.Player('ytplayer2020');
+        twenty_player.setSize(0, 0);
+    }
+
+    // 2012 https://www.youtube.com/embed/hx1mjT73xYE?autoplay=1
+    // 2020 https://www.youtube.com/embed/wW1lY5jFNcQ?autoplay=1
+
+
+    function play2020(){
+      // get a random timestamp
+      var min_second = 124;
+      var max_second = 5670;
+      var start = Math.floor(Math.random()*(max_second - min_second + 1) + min_second);       
+
+      if(twenty_player){
+        console.log("Seeking for 2020 to " + start);
+        twelve_player.pauseVideo();
+        twenty_player.seekTo(start, true);
+        twelve_player.setSize(0, 0);
+        twenty_player.setSize(640, 360);
+        twenty_player.playVideo();
+      }
+    }
+
+    function play2012() {
+        // get a random timestamp
+        var min_second = 165;
+        var max_second = 5440;
+        var start = Math.floor(Math.random()*(max_second - min_second + 1) + min_second); 
+
+        if(twelve_player){
+          console.log("Seeking for 2012 to " + start);
+          twenty_player.pauseVideo();
+          twelve_player.seekTo(start, true);
+          twenty_player.setSize(0, 0);
+          twelve_player.setSize(640, 360);
+          twelve_player.playVideo();
+        }
+    }
+
+    function stopBothVideos(){
+      clearInterval(interval);
+      twenty_player.pauseVideo();
+      twenty_player.setSize(0, 0);
+      twelve_player.pauseVideo();
+      twelve_player.setSize(0, 0);
+    }
+
+    var twenty_VideoNext = false;
+    var interval;
+    var active = false;
+
+    $('#startstop').click(function() {      
+        if(active == false){
+            console.log("Starting video playback");
+            interval = setInterval(switchVideos, 10000);
+            twelve_player.setVolume(50); // set the volume so it's even for both
+            twenty_player.setVolume(100);
+            play2020();
+            // change the button content
+            $('#startstop').text("Oh god, what has America become! Make it stop!").addClass('btn-danger').removeClass('btn-primary');
+            active = true;
+        } else if (active == true){
+            console.log("Stopping video playback");
+            stopBothVideos();
+            $('#startstop').text("Okay. I think I'm ready to start again.").addClass('btn-primary').removeClass('btn-danger');
+            active = false;
+        }
+    });
+
+
+    function switchVideos() {
+      console.log("Switching video");
+      if(twenty_VideoNext){
+        // play first video
+        twenty_VideoNext = false;
+        play2020();
+      } else {
+        twenty_VideoNext = true;
+        play2012();
+      }
+    }
+
+    /*
+    $('#switchVideos').on('click', function() {
+      if($("#switchVideos").is(':checked')){
+          // start a timer and set function to execute when it finishes
+          console.log("Switch video checked");
+          interval = setInterval(switchVideos, 10000);
+      } else {
+          console.log("Switch videos is now unchecked");
+          clearInterval(interval);
+      }
+    })*/
+
+  </script>
+
+
+  </body>
+
+</html>
